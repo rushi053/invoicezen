@@ -36,6 +36,9 @@ export interface InvoiceData {
 
   // Template
   template: "clean" | "professional" | "bold" | "executive" | "creative" | "stripe" | "contrast";
+  
+  // Pro features
+  accentColor?: string; // Custom accent color for Pro users
 }
 
 export const defaultInvoice: InvoiceData = {
@@ -56,7 +59,15 @@ export const defaultInvoice: InvoiceData = {
   discount: 0,
   notes: "",
   template: "clean",
+  accentColor: "#059669",
 };
+
+export function getDaysUntilDue(invoiceDate: string, dueDate: string): number {
+  const invoice = new Date(invoiceDate);
+  const due = new Date(dueDate);
+  const diff = due.getTime() - invoice.getTime();
+  return Math.ceil(diff / (1000 * 60 * 60 * 24));
+}
 
 export function calcSubtotal(items: LineItem[]): number {
   return items.reduce((sum, i) => sum + i.quantity * i.rate, 0);

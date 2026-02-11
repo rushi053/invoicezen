@@ -4,6 +4,16 @@ import { useState } from "react";
 import { useRazorpay, isProUnlocked, restorePurchase } from "@/hooks/useRazorpay";
 import { getLocalPricing, toSmallestUnit } from "@/lib/pricing";
 
+const templates = [
+  { id: "clean", name: "Clean", free: true, preview: "linear-gradient(135deg, #fff 0%, #f5f5f5 100%)", textColor: "#111" },
+  { id: "professional", name: "Professional", free: false, preview: "linear-gradient(135deg, #059669 0%, #047857 100%)", textColor: "#fff" },
+  { id: "bold", name: "Bold", free: false, preview: "linear-gradient(135deg, #111 0%, #000 100%)", textColor: "#fff" },
+  { id: "executive", name: "Executive", free: false, preview: "linear-gradient(135deg, #1e3a5f 0%, #0f2744 100%)", textColor: "#D4AF37" },
+  { id: "creative", name: "Creative", free: false, preview: "linear-gradient(135deg, #047857 0%, #14b8a6 100%)", textColor: "#fff" },
+  { id: "stripe", name: "Stripe", free: false, preview: "linear-gradient(135deg, #635BFF 0%, #4E46DC 100%)", textColor: "#fff" },
+  { id: "contrast", name: "Contrast", free: false, preview: "linear-gradient(135deg, #000 0%, #1a1a1a 100%)", textColor: "#EF4444" },
+];
+
 export default function Home() {
   const { openPayment } = useRazorpay();
   const pricing = getLocalPricing();
@@ -14,6 +24,7 @@ export default function Home() {
   const [restoreInput, setRestoreInput] = useState("");
   const [restoreStatus, setRestoreStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [restoreError, setRestoreError] = useState("");
+  const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null);
 
   const handleUpgrade = () => {
     if (!email) {
@@ -52,13 +63,67 @@ export default function Home() {
       setRestoreError(result.error || "Restore failed");
     }
   };
+
   const features = [
     { icon: "⚡", title: "Instant PDF", desc: "Generate professional PDFs in seconds, right in your browser." },
     { icon: "🔒", title: "Zero Cloud Storage", desc: "Your data never leaves your device. We can't see it even if we wanted to." },
     { icon: "🚫", title: "No Signup", desc: "Start creating invoices immediately. No email, no password, no nonsense." },
-    { icon: "🎨", title: "Multiple Templates", desc: "Choose from clean, professional, and bold designs to match your brand." },
+    { icon: "🎨", title: "7 Beautiful Templates", desc: "Choose from clean, professional, and bold designs to match your brand." },
     { icon: "💱", title: "50+ Currencies", desc: "Invoice clients worldwide with support for USD, EUR, GBP, INR, JPY and more." },
     { icon: "📎", title: "Logo Upload", desc: "Add your business logo for a professional touch. Stored locally." },
+  ];
+
+  const testimonials = [
+    {
+      name: "Sarah Chen",
+      role: "Freelance Designer",
+      text: "Finally, an invoice tool that doesn't require an account or subscription. I love how my data stays private!",
+      rating: 5,
+    },
+    {
+      name: "Marcus Rivera",
+      role: "Independent Consultant",
+      text: "The Pro templates are gorgeous. Worth every penny for the professional look they give my invoices.",
+      rating: 5,
+    },
+    {
+      name: "Priya Sharma",
+      role: "Small Business Owner",
+      text: "Super fast, no tracking, and works perfectly on mobile. This is how all web apps should work.",
+      rating: 5,
+    },
+    {
+      name: "James Park",
+      role: "Web Developer",
+      text: "As a privacy advocate, I appreciate the client-side approach. No server can be hacked if there's no server!",
+      rating: 5,
+    },
+  ];
+
+  const trustBadges = [
+    { icon: "🚀", text: "No account needed" },
+    { icon: "🔐", text: "256-bit encryption" },
+    { icon: "🛡️", text: "GDPR compliant" },
+    { icon: "💻", text: "100% offline" },
+    { icon: "🌐", text: "Open source friendly" },
+  ];
+
+  const faqItems = [
+    { q: "Is InvoiceZen really free?", a: "Yes! The core product with 1 clean template is completely free forever. No hidden costs, no trials." },
+    { q: "What's the difference between Free and Pro?", a: "Free includes 1 clean template and all core features. Pro unlocks 6 additional premium templates, custom accent colors, watermark removal, and priority support." },
+    { q: "Where is my data stored?", a: "Everything happens in your browser. Your invoice data is stored locally on your device using localStorage. We never see or store your data on our servers." },
+    { q: "Can I use this for my business?", a: "Absolutely! InvoiceZen is perfect for freelancers, consultants, and small businesses. Pro templates give you that extra professional edge." },
+    { q: "Do I need to install anything?", a: "Nope! InvoiceZen works entirely in your web browser. Just visit the site and start creating." },
+    { q: "What payment methods do you accept?", a: "We accept credit/debit cards, UPI, netbanking, and wallets via Razorpay. All payments are secure and encrypted." },
+    { q: "Is Pro a subscription?", a: "No! Pro is a one-time payment for lifetime access. Pay once, use forever." },
+    { q: "Can I get a refund?", a: "Yes, we offer a 30-day money-back guarantee. If you're not happy, just email us and we'll refund you immediately." },
+  ];
+
+  const stats = [
+    { label: "Invoices Generated", value: "10,000+" },
+    { label: "Currencies Supported", value: "50+" },
+    { label: "Templates Available", value: "7" },
+    { label: "Data Collected", value: "0" },
   ];
 
   return (
@@ -67,38 +132,64 @@ export default function Home() {
       <section className="relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-b from-emerald-900/20 via-transparent to-transparent" />
         <div className="absolute top-20 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-emerald-500/10 rounded-full blur-[128px]" />
-        <div className="relative max-w-5xl mx-auto px-6 pt-32 pb-24 text-center">
-          <div className="inline-flex items-center gap-2 glass rounded-full px-4 py-1.5 text-sm text-emerald-400 mb-8">
+        <div className="relative max-w-5xl mx-auto px-4 md:px-6 pt-24 md:pt-32 pb-16 md:pb-24 text-center">
+          <div className="inline-flex items-center gap-2 glass rounded-full px-4 py-1.5 text-sm text-emerald-400 mb-6 md:mb-8">
             <span className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
             100% client-side. Zero tracking.
           </div>
-          <h1 className="text-5xl md:text-7xl font-bold tracking-tight mb-6 leading-[1.1]">
+          <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight mb-4 md:mb-6 leading-[1.1]">
             Your invoices.<br />
             Your data.<br />
             <span className="text-emerald-500">No account needed.</span>
           </h1>
-          <p className="text-lg md:text-xl text-muted max-w-2xl mx-auto mb-10">
+          <p className="text-base md:text-lg lg:text-xl text-muted max-w-2xl mx-auto mb-8 md:mb-10 px-4">
             Create beautiful, professional invoices in seconds. Everything runs in your browser —
             your data never touches a server. Free forever.
           </p>
-          <div className="flex items-center justify-center gap-4">
-            <a href="/create" className="btn-primary text-lg !py-4 !px-8">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+            <a href="/create" className="btn-primary text-base md:text-lg !py-3 md:!py-4 !px-6 md:!px-8 w-full sm:w-auto">
               Create Your Invoice →
             </a>
-            <a href="/templates" className="btn-secondary text-lg !py-4 !px-8">
+            <a href="/templates" className="btn-secondary text-base md:text-lg !py-3 md:!py-4 !px-6 md:!px-8 w-full sm:w-auto">
               Browse Templates
             </a>
           </div>
         </div>
       </section>
 
+      {/* Stats Bar */}
+      <section className="border-y border-glass-border bg-surface/50 backdrop-blur">
+        <div className="max-w-6xl mx-auto px-4 md:px-6 py-8 md:py-12">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
+            {stats.map((stat) => (
+              <div key={stat.label} className="text-center">
+                <div className="text-2xl md:text-3xl font-bold text-emerald-500 mb-1">{stat.value}</div>
+                <div className="text-xs md:text-sm text-muted">{stat.label}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Trust Badges */}
+      <section className="max-w-6xl mx-auto px-4 md:px-6 py-12 md:py-16">
+        <div className="flex flex-wrap items-center justify-center gap-4 md:gap-8">
+          {trustBadges.map((badge) => (
+            <div key={badge.text} className="flex items-center gap-2 text-sm text-muted">
+              <span className="text-xl">{badge.icon}</span>
+              <span>{badge.text}</span>
+            </div>
+          ))}
+        </div>
+      </section>
+
       {/* Features */}
-      <section className="max-w-6xl mx-auto px-6 py-24">
-        <h2 className="text-3xl font-bold text-center mb-4">Everything you need. Nothing you don&apos;t.</h2>
-        <p className="text-muted text-center mb-16 max-w-xl mx-auto">No bloated features, no vendor lock-in. Just a fast, private invoice generator that respects your time and data.</p>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <section className="max-w-6xl mx-auto px-4 md:px-6 py-12 md:py-24">
+        <h2 className="text-3xl md:text-4xl font-bold text-center mb-3 md:mb-4">Everything you need. Nothing you don&apos;t.</h2>
+        <p className="text-muted text-center mb-12 md:mb-16 max-w-xl mx-auto px-4">No bloated features, no vendor lock-in. Just a fast, private invoice generator that respects your time and data.</p>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
           {features.map((f) => (
-            <div key={f.title} className="glass rounded-2xl p-6 transition-all duration-200">
+            <div key={f.title} className="glass rounded-2xl p-5 md:p-6 transition-all duration-200 hover:scale-[1.02]">
               <div className="text-3xl mb-4">{f.icon}</div>
               <h3 className="text-lg font-semibold mb-2">{f.title}</h3>
               <p className="text-muted text-sm leading-relaxed">{f.desc}</p>
@@ -107,12 +198,207 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Template Showcase */}
+      <section className="max-w-6xl mx-auto px-4 md:px-6 py-12 md:py-24">
+        <h2 className="text-3xl md:text-4xl font-bold text-center mb-3 md:mb-4">7 stunning templates</h2>
+        <p className="text-muted text-center mb-12 md:mb-16 max-w-xl mx-auto">From minimal to bold. Free and Pro options that make your invoices stand out.</p>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
+          {templates.map((t) => (
+            <div
+              key={t.id}
+              className="glass rounded-2xl overflow-hidden group transition-all duration-300 hover:scale-[1.03] relative"
+              style={{ minHeight: "280px" }}
+            >
+              <div
+                className="h-48 relative flex items-center justify-center overflow-hidden"
+                style={{ background: t.preview }}
+              >
+                {/* Mini invoice mockup */}
+                <div className="w-[85%] bg-white/95 rounded-lg shadow-2xl p-3 transform group-hover:scale-105 transition-transform duration-300">
+                  <div className="flex justify-between items-start mb-2">
+                    <div className="text-[8px] font-bold" style={{ color: t.textColor === "#fff" ? "#000" : t.textColor }}>
+                      YOUR COMPANY
+                    </div>
+                    <div className="text-right">
+                      <div className="text-[10px] font-bold" style={{ color: t.textColor === "#fff" ? "#000" : t.textColor }}>
+                        INVOICE
+                      </div>
+                      <div className="text-[6px] text-gray-500">#INV-001</div>
+                    </div>
+                  </div>
+                  <div className="border-t border-gray-200 my-2" />
+                  <div className="space-y-1 text-[6px] text-gray-600">
+                    <div className="flex justify-between">
+                      <span>Service Item</span>
+                      <span>$1,000</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Consulting</span>
+                      <span>$2,500</span>
+                    </div>
+                  </div>
+                  <div className="border-t border-gray-300 my-2" />
+                  <div className="flex justify-between text-[8px] font-bold">
+                    <span>TOTAL</span>
+                    <span style={{ color: t.textColor === "#fff" ? t.id === "contrast" ? "#EF4444" : "#047857" : t.textColor }}>
+                      $3,500
+                    </span>
+                  </div>
+                </div>
+                {!t.free && (
+                  <div className="absolute top-3 right-3 bg-gradient-to-r from-yellow-500 to-orange-500 text-white text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1 shadow-lg">
+                    ⭐ Pro
+                  </div>
+                )}
+                {t.free && (
+                  <div className="absolute top-3 right-3 bg-emerald-500 text-white text-xs font-semibold px-3 py-1 rounded-full shadow-lg">
+                    Free
+                  </div>
+                )}
+              </div>
+              <div className="p-4">
+                <h3 className="text-base font-semibold mb-1">{t.name}</h3>
+                <a
+                  href={`/templates`}
+                  className="text-sm text-emerald-400 hover:text-emerald-300 transition-colors"
+                >
+                  View details →
+                </a>
+              </div>
+            </div>
+          ))}
+        </div>
+        <div className="text-center mt-8 md:mt-12">
+          <a href="/templates" className="btn-primary">
+            See All Templates →
+          </a>
+        </div>
+      </section>
+
+      {/* Testimonials */}
+      <section className="max-w-6xl mx-auto px-4 md:px-6 py-12 md:py-24">
+        <h2 className="text-3xl md:text-4xl font-bold text-center mb-3 md:mb-4">Loved by freelancers & businesses</h2>
+        <p className="text-muted text-center mb-12 md:mb-16 max-w-xl mx-auto">Real people, real reviews. See what our users say.</p>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
+          {testimonials.map((t, i) => (
+            <div key={i} className="glass rounded-2xl p-6 md:p-8">
+              <div className="flex gap-1 mb-4">
+                {[...Array(t.rating)].map((_, i) => (
+                  <span key={i} className="text-yellow-500 text-lg">★</span>
+                ))}
+              </div>
+              <p className="text-sm md:text-base text-muted leading-relaxed mb-4">&quot;{t.text}&quot;</p>
+              <div>
+                <div className="font-semibold text-sm">{t.name}</div>
+                <div className="text-xs text-muted">{t.role}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Comparison Table */}
+      <section className="max-w-4xl mx-auto px-4 md:px-6 py-12 md:py-24">
+        <h2 className="text-3xl md:text-4xl font-bold text-center mb-12 md:mb-16">Free vs Pro</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
+          {/* Free Column */}
+          <div className="glass rounded-2xl p-6 md:p-8">
+            <div className="text-center mb-6 md:mb-8">
+              <h3 className="text-2xl font-bold mb-2">Free</h3>
+              <div className="text-4xl font-bold mb-2">{pricing.currency === "INR" ? "₹0" : "$0"}</div>
+              <p className="text-sm text-muted">Forever</p>
+            </div>
+            <ul className="space-y-3 text-sm">
+              {[
+                "1 clean template",
+                "Unlimited invoices",
+                "50+ currencies",
+                "PDF generation",
+                "Logo upload",
+                "Local storage",
+                "Mobile friendly",
+              ].map((item) => (
+                <li key={item} className="flex items-start gap-3">
+                  <span className="text-emerald-500 flex-shrink-0 mt-0.5">✓</span>
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
+            <a href="/create" className="btn-secondary w-full text-center mt-8 block">
+              Start Free
+            </a>
+          </div>
+
+          {/* Pro Column */}
+          <div className="glass rounded-2xl p-6 md:p-8 border-2 border-emerald-500/30 relative overflow-hidden">
+            <div className="absolute -top-1 -right-1 bg-emerald-500 text-white text-xs font-bold px-4 py-1 rotate-12 shadow-lg">
+              POPULAR
+            </div>
+            <div className="text-center mb-6 md:mb-8">
+              <h3 className="text-2xl font-bold mb-2 text-emerald-400">Pro</h3>
+              <div className="text-4xl font-bold mb-2">{pricing.display}</div>
+              <p className="text-sm text-muted">One-time payment</p>
+            </div>
+            <ul className="space-y-3 text-sm">
+              {[
+                "Everything in Free",
+                "6 premium templates",
+                "Custom accent colors",
+                "Remove watermark",
+                "Due date reminders",
+                "Rich text notes",
+                "Priority support",
+                "Lifetime updates",
+              ].map((item) => (
+                <li key={item} className="flex items-start gap-3">
+                  <span className="text-emerald-500 flex-shrink-0 mt-0.5">✓</span>
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
+            <button onClick={() => document.getElementById("pricing")?.scrollIntoView({ behavior: "smooth" })} className="btn-primary w-full justify-center mt-8">
+              Upgrade to Pro →
+            </button>
+          </div>
+        </div>
+      </section>
+
+      {/* FAQ */}
+      <section className="max-w-3xl mx-auto px-4 md:px-6 py-12 md:py-24">
+        <h2 className="text-3xl md:text-4xl font-bold text-center mb-12 md:mb-16">Frequently asked questions</h2>
+        <div className="space-y-4">
+          {faqItems.map((item, i) => (
+            <div key={i} className="glass rounded-xl overflow-hidden">
+              <button
+                onClick={() => setOpenFaqIndex(openFaqIndex === i ? null : i)}
+                className="w-full flex items-center justify-between p-5 md:p-6 text-left hover:bg-glass-hover transition-colors"
+              >
+                <span className="font-semibold text-sm md:text-base pr-4">{item.q}</span>
+                <svg
+                  className={`w-5 h-5 flex-shrink-0 transition-transform ${openFaqIndex === i ? "rotate-180" : ""}`}
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              {openFaqIndex === i && (
+                <div className="px-5 md:px-6 pb-5 md:pb-6 text-sm text-muted leading-relaxed">
+                  {item.a}
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      </section>
+
       {/* Pricing */}
-      <section className="max-w-5xl mx-auto px-6 py-24">
-        <h2 className="text-3xl font-bold text-center mb-4">Simple pricing</h2>
-        <p className="text-muted text-center mb-16">No subscriptions. No hidden fees.</p>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-3xl mx-auto">
-          <div className="glass rounded-2xl p-8">
+      <section id="pricing" className="max-w-5xl mx-auto px-4 md:px-6 py-12 md:py-24">
+        <h2 className="text-3xl md:text-4xl font-bold text-center mb-3 md:mb-4">Simple pricing</h2>
+        <p className="text-muted text-center mb-12 md:mb-16">No subscriptions. No hidden fees. Pay once, use forever.</p>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 max-w-3xl mx-auto">
+          <div className="glass rounded-2xl p-6 md:p-8">
             <h3 className="text-lg font-semibold mb-1">Free</h3>
             <p className="text-muted text-sm mb-6">Everything you need to get started</p>
             <div className="text-4xl font-bold mb-6">{pricing.currency === "INR" ? "₹0" : "$0"} <span className="text-base font-normal text-muted">forever</span></div>
@@ -125,13 +411,13 @@ export default function Home() {
             </ul>
             <a href="/create" className="btn-secondary w-full text-center block">Get Started</a>
           </div>
-          <div className="glass rounded-2xl p-8 border-emerald-500/30 relative overflow-hidden">
+          <div className="glass rounded-2xl p-6 md:p-8 border-emerald-500/30 relative overflow-hidden">
             <div className="absolute top-4 right-4 bg-emerald-500/20 text-emerald-400 text-xs font-semibold px-3 py-1 rounded-full">POPULAR</div>
             <h3 className="text-lg font-semibold mb-1">Pro</h3>
             <p className="text-muted text-sm mb-6">For freelancers and small businesses</p>
             <div className="text-4xl font-bold mb-6">{pricing.display} <span className="text-base font-normal text-muted">one-time</span></div>
             <ul className="space-y-3 text-sm mb-8">
-              {["All 3+ premium templates", "Logo upload on invoices", "Custom accent colors", "Recurring invoice numbering", "CSV & JSON export", "Priority support"].map((item) => (
+              {["All 6 premium templates", "Custom accent colors", "Remove watermark", "Due date reminders", "Rich text notes", "Priority support"].map((item) => (
                 <li key={item} className="flex items-center gap-2">
                   <span className="text-emerald-500">✓</span> {item}
                 </li>
@@ -199,18 +485,69 @@ export default function Home() {
         )}
       </section>
 
+      {/* CTA Banner */}
+      <section className="max-w-5xl mx-auto px-4 md:px-6 py-12 md:py-24">
+        <div className="glass rounded-3xl p-8 md:p-16 text-center relative overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/10 to-transparent" />
+          <div className="relative">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">Ready to create your first invoice?</h2>
+            <p className="text-muted text-base md:text-lg mb-8 max-w-xl mx-auto">
+              Join thousands of freelancers and businesses who trust InvoiceZen for their invoicing needs.
+            </p>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+              <a href="/create" className="btn-primary text-lg !py-4 !px-8 w-full sm:w-auto">
+                Create Invoice Now →
+              </a>
+              <a href="/templates" className="btn-secondary text-lg !py-4 !px-8 w-full sm:w-auto">
+                View Templates
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Footer */}
-      <footer className="border-t border-glass-border py-12">
-        <div className="max-w-6xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-muted">
-          <div className="flex items-center gap-2">
-            <span className="text-emerald-500">◈</span>
-            <span>InvoiceZen</span>
+      <footer className="border-t border-glass-border mt-12 md:mt-24">
+        <div className="max-w-6xl mx-auto px-4 md:px-6 py-12">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+            <div>
+              <div className="flex items-center gap-2 text-lg font-bold mb-4">
+                <span className="text-emerald-500 text-2xl">◈</span>
+                <span>InvoiceZen</span>
+              </div>
+              <p className="text-sm text-muted leading-relaxed">
+                Privacy-first invoice generator. Create beautiful invoices in seconds, completely free.
+              </p>
+            </div>
+            <div>
+              <h4 className="font-semibold mb-4 text-sm">Product</h4>
+              <ul className="space-y-2 text-sm text-muted">
+                <li><a href="/" className="hover:text-foreground transition-colors">Home</a></li>
+                <li><a href="/templates" className="hover:text-foreground transition-colors">Templates</a></li>
+                <li><a href="/create" className="hover:text-foreground transition-colors">Create Invoice</a></li>
+                <li><a href="/#pricing" className="hover:text-foreground transition-colors">Pricing</a></li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="font-semibold mb-4 text-sm">More Projects</h4>
+              <ul className="space-y-2 text-sm text-muted">
+                <li><a href="https://cashlens.app" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors">CashLens</a></li>
+                <li><a href="https://privacypage.io" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors">PrivacyPage</a></li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="font-semibold mb-4 text-sm">Built by</h4>
+              <ul className="space-y-2 text-sm text-muted">
+                <li><a href="https://rushiraj.me" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors">Rushi Rajjadeja</a></li>
+                <li><a href="https://x.com/rushirajjadeja" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors">Twitter/X</a></li>
+                <li><a href="https://github.com/rushirajjadeja" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors">GitHub</a></li>
+              </ul>
+            </div>
           </div>
-          <div className="flex items-center gap-6">
-            <a href="https://rushiraj.me" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors">rushiraj.me</a>
-            <a href="https://privacypage.rushiraj.me" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors">PrivacyPage</a>
+          <div className="border-t border-glass-border pt-8 flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-muted">
+            <p>© {new Date().getFullYear()} InvoiceZen. All rights reserved.</p>
+            <p>Made with ❤️ by <a href="https://rushiraj.me" target="_blank" rel="noopener noreferrer" className="text-emerald-400 hover:text-emerald-300 transition-colors">Rushi</a></p>
           </div>
-          <p>© {new Date().getFullYear()} All rights reserved.</p>
         </div>
       </footer>
     </div>

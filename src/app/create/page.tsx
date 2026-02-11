@@ -5,13 +5,17 @@ import { InvoiceData, defaultInvoice, LineItem, calcSubtotal, calcTotal } from "
 import { currencies, getCurrency } from "@/lib/currencies";
 import { InvoicePreview } from "@/components/InvoicePreview";
 import { PdfDownloadButton } from "@/components/PdfDownloadButton";
+import { isProUnlocked } from "@/hooks/useRazorpay";
 
 export default function CreatePage() {
   const [invoice, setInvoice] = useState<InvoiceData>(defaultInvoice);
   const [mounted, setMounted] = useState(false);
+  const [isPro, setIsPro] = useState(false);
 
   useEffect(() => {
     setMounted(true);
+    setIsPro(isProUnlocked());
+    
     // Load saved business details
     const saved = localStorage.getItem("invoicezen-business");
     if (saved) {
@@ -23,8 +27,8 @@ export default function CreatePage() {
     // Load template from URL params
     const params = new URLSearchParams(window.location.search);
     const tpl = params.get("template");
-    if (tpl === "clean" || tpl === "professional" || tpl === "bold") {
-      setInvoice((prev) => ({ ...prev, template: tpl }));
+    if (tpl && ["clean", "professional", "bold", "executive", "creative", "stripe", "contrast"].includes(tpl)) {
+      setInvoice((prev) => ({ ...prev, template: tpl as InvoiceData["template"] }));
     }
     // Auto-increment invoice number
     const counter = parseInt(localStorage.getItem("invoicezen-counter") || "1", 10);
@@ -141,6 +145,51 @@ export default function CreatePage() {
             <Field label="Invoice Date" value={invoice.invoiceDate} onChange={(v) => update("invoiceDate", v)} type="date" />
             <Field label="Due Date" value={invoice.dueDate} onChange={(v) => update("dueDate", v)} type="date" />
           </div>
+          
+          {/* Pro Feature: Custom Accent Color */}
+          {isPro && (
+            <div className="mt-4 glass rounded-xl p-4">
+              <div className="flex items-center justify-between mb-3">
+                <label className="text-sm text-muted">Custom Accent Color (Pro)</label>
+                <span className="text-xs bg-emerald-500/20 text-emerald-400 px-2 py-1 rounded">✨ Pro</span>
+              </div>
+              <div className="flex items-center gap-3">
+                <input
+                  type="color"
+                  value={invoice.accentColor || "#059669"}
+                  onChange={(e) => update("accentColor", e.target.value)}
+                  className="w-16 h-10 rounded cursor-pointer"
+                />
+                <div className="flex-1">
+                  <input
+                    type="text"
+                    value={invoice.accentColor || "#059669"}
+                    onChange={(e) => update("accentColor", e.target.value)}
+                    placeholder="#059669"
+                    className="w-full"
+                  />
+                </div>
+                <button
+                  onClick={() => update("accentColor", "#059669")}
+                  className="text-xs text-muted hover:text-foreground transition-colors"
+                >
+                  Reset
+                </button>
+              </div>
+              <p className="text-xs text-muted mt-2">Customize the accent color used in your invoice headers, totals, and highlights.</p>
+            </div>
+          )}
+          
+          {!isPro && (
+            <div className="mt-4 glass rounded-xl p-4 border border-emerald-500/20">
+              <p className="text-sm text-muted mb-2">
+                <span className="text-emerald-400 font-semibold">Pro features:</span> Custom accent colors, watermark removal, due date reminders, and more.
+              </p>
+              <a href="/#pricing" className="text-sm text-emerald-400 hover:text-emerald-300 transition-colors">
+                Upgrade to Pro →
+              </a>
+            </div>
+          )}
         </Section>
 
         {/* Line Items */}
