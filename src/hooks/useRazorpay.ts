@@ -11,6 +11,7 @@ declare global {
 interface PaymentOptions {
   email?: string;
   currency?: string;
+  amount?: number;
   onSuccess: (licenseKey?: string) => void;
   onFailure: (error: string) => void;
 }
@@ -30,12 +31,12 @@ export function useRazorpay() {
     document.body.appendChild(script);
   }, []);
 
-  const openPayment = useCallback(async ({ email, currency = "USD", onSuccess, onFailure }: PaymentOptions) => {
+  const openPayment = useCallback(async ({ email, currency = "USD", amount, onSuccess, onFailure }: PaymentOptions) => {
     try {
       const res = await fetch("/api/payment/create-order", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ currency }),
+        body: JSON.stringify({ currency, amount }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Failed to create order");

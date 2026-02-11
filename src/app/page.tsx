@@ -24,6 +24,7 @@ export default function Home() {
     openPayment({
       email,
       currency: pricing.currency,
+      amount: toSmallestUnit(pricing.price, pricing.currency),
       onSuccess: (key) => {
         setProStatus("success");
         setLicenseKey(key || null);
@@ -128,7 +129,7 @@ export default function Home() {
             <div className="absolute top-4 right-4 bg-emerald-500/20 text-emerald-400 text-xs font-semibold px-3 py-1 rounded-full">POPULAR</div>
             <h3 className="text-lg font-semibold mb-1">Pro</h3>
             <p className="text-muted text-sm mb-6">For freelancers and small businesses</p>
-            <div className="text-4xl font-bold mb-6">{pricing.price} <span className="text-base font-normal text-muted">one-time</span></div>
+            <div className="text-4xl font-bold mb-6">{pricing.display} <span className="text-base font-normal text-muted">one-time</span></div>
             <ul className="space-y-3 text-sm mb-8">
               {["All 3+ premium templates", "Logo upload on invoices", "Custom accent colors", "Recurring invoice numbering", "CSV & JSON export", "Priority support"].map((item) => (
                 <li key={item} className="flex items-center gap-2">

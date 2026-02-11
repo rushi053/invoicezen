@@ -1,16 +1,19 @@
 import { NextRequest, NextResponse } from "next/server";
 
-// $19 USD = 1900 cents. Razorpay uses smallest currency unit.
+// Prices in smallest currency unit (cents/paise)
 const PRICES: Record<string, number> = {
   USD: 1900,
-  INR: 159900, // ~₹1599
+  INR: 159900,
+  EUR: 1799,
+  GBP: 1499,
 };
 
 export async function POST(req: NextRequest) {
   try {
-    const { currency = "USD" } = await req.json();
+    const { currency = "USD", amount } = await req.json();
 
-    const amount = PRICES[currency] || PRICES.USD;
+    // Use provided amount (from client pricing) or fall back to server prices
+    const finalAmount = amount || PRICES[currency] || PRICES.USD;
     const cur = PRICES[currency] ? currency : "USD";
 
     const keyId = process.env.RAZORPAY_KEY_ID;
@@ -29,7 +32,7 @@ export async function POST(req: NextRequest) {
         Authorization: `Basic ${auth}`,
       },
       body: JSON.stringify({
-        amount,
+        amount: finalAmount,
         currency: cur,
         receipt: `invoicezen_pro_${Date.now()}`,
       }),
@@ -42,7 +45,7 @@ export async function POST(req: NextRequest) {
     }
 
     const order = await res.json();
-    return NextResponse.json({ orderId: order.id, amount, currency: cur });
+    return NextResponse.json({ orderId: order.id, amount: finalAmount, currency: cur });
   } catch (error) {
     console.error("Create order error:", error);
     return NextResponse.json({ error: "Failed to create order" }, { status: 500 });
