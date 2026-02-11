@@ -1,5 +1,8 @@
 "use client";
 
+import { useState, useEffect } from "react";
+import { useRazorpay, isProUnlocked } from "@/hooks/useRazorpay";
+
 const templates = [
   {
     id: "clean",
@@ -25,6 +28,23 @@ const templates = [
 ];
 
 export default function TemplatesPage() {
+  const { openPayment } = useRazorpay();
+  const [isPro, setIsPro] = useState(false);
+
+  useEffect(() => {
+    setIsPro(isProUnlocked());
+  }, []);
+
+  const handleUpgrade = () => {
+    openPayment({
+      currency: "USD",
+      onSuccess: () => {
+        setIsPro(true);
+      },
+      onFailure: () => {},
+    });
+  };
+
   return (
     <div className="min-h-screen max-w-5xl mx-auto px-6 py-16">
       <h1 className="text-4xl font-bold mb-3">Invoice Templates</h1>
@@ -57,7 +77,7 @@ export default function TemplatesPage() {
             <div className="p-5">
               <h3 className="text-lg font-semibold mb-1">{t.name}</h3>
               <p className="text-muted text-sm mb-4">{t.desc}</p>
-              {t.free ? (
+              {t.free || isPro ? (
                 <a
                   href={`/create?template=${t.id}`}
                   className="btn-primary text-sm !py-2 !px-4 w-full text-center block"
@@ -66,10 +86,10 @@ export default function TemplatesPage() {
                 </a>
               ) : (
                 <button
-                  className="btn-secondary text-sm !py-2 !px-4 w-full text-center opacity-70 cursor-not-allowed"
-                  title="Pro feature — coming soon"
+                  onClick={handleUpgrade}
+                  className="btn-secondary text-sm !py-2 !px-4 w-full text-center hover:opacity-100 transition-opacity"
                 >
-                  🔒 Pro — Coming Soon
+                  🔒 Unlock Pro — $19
                 </button>
               )}
             </div>

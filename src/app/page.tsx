@@ -1,4 +1,26 @@
+"use client";
+
+import { useState } from "react";
+import { useRazorpay, isProUnlocked } from "@/hooks/useRazorpay";
+
 export default function Home() {
+  const { openPayment } = useRazorpay();
+  const [proStatus, setProStatus] = useState<"idle" | "success" | "error">("idle");
+  const [licenseKey, setLicenseKey] = useState<string | null>(null);
+
+  const handleUpgrade = () => {
+    setProStatus("idle");
+    openPayment({
+      currency: "USD",
+      onSuccess: (key) => {
+        setProStatus("success");
+        setLicenseKey(key || null);
+      },
+      onFailure: (err) => {
+        if (err !== "Payment cancelled") setProStatus("error");
+      },
+    });
+  };
   const features = [
     { icon: "⚡", title: "Instant PDF", desc: "Generate professional PDFs in seconds, right in your browser." },
     { icon: "🔒", title: "Zero Cloud Storage", desc: "Your data never leaves your device. We can't see it even if we wanted to." },
@@ -84,7 +106,17 @@ export default function Home() {
                 </li>
               ))}
             </ul>
-            <button className="btn-primary w-full justify-center">Coming Soon</button>
+            {proStatus === "success" ? (
+              <div className="text-center">
+                <div className="text-emerald-400 font-semibold mb-1">✓ Pro Unlocked!</div>
+                {licenseKey && <div className="text-xs text-muted font-mono">{licenseKey}</div>}
+              </div>
+            ) : (
+              <button onClick={handleUpgrade} className="btn-primary w-full justify-center">
+                Upgrade to Pro →
+              </button>
+            )}
+            {proStatus === "error" && <p className="text-red-400 text-xs text-center mt-2">Payment failed. Try again.</p>}
           </div>
         </div>
       </section>
