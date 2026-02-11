@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRazorpay, isProUnlocked } from "@/hooks/useRazorpay";
+import { usePricing } from "@/hooks/usePricing";
 
 const templates = [
   {
@@ -57,6 +58,7 @@ const templates = [
 
 export default function TemplatesPage() {
   const { openPayment } = useRazorpay();
+  const pricing = usePricing();
   const [isPro, setIsPro] = useState(false);
 
   useEffect(() => {
@@ -65,7 +67,7 @@ export default function TemplatesPage() {
 
   const handleUpgrade = () => {
     openPayment({
-      currency: "USD",
+      currency: pricing.currency,
       onSuccess: () => {
         setIsPro(true);
       },
@@ -117,7 +119,7 @@ export default function TemplatesPage() {
                   onClick={handleUpgrade}
                   className="btn-secondary text-sm !py-2 !px-4 w-full text-center hover:opacity-100 transition-opacity"
                 >
-                  🔒 Unlock Pro — $19
+                  🔒 Unlock Pro — {pricing.price}
                 </button>
               )}
             </div>

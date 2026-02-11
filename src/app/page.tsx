@@ -2,9 +2,11 @@
 
 import { useState } from "react";
 import { useRazorpay, isProUnlocked, restorePurchase } from "@/hooks/useRazorpay";
+import { getLocalPricing, toSmallestUnit } from "@/lib/pricing";
 
 export default function Home() {
   const { openPayment } = useRazorpay();
+  const pricing = getLocalPricing();
   const [proStatus, setProStatus] = useState<"idle" | "success" | "error">("idle");
   const [licenseKey, setLicenseKey] = useState<string | null>(null);
   const [email, setEmail] = useState("");
@@ -21,7 +23,7 @@ export default function Home() {
     setProStatus("idle");
     openPayment({
       email,
-      currency: "USD",
+      currency: pricing.currency,
       onSuccess: (key) => {
         setProStatus("success");
         setLicenseKey(key || null);
@@ -112,7 +114,7 @@ export default function Home() {
           <div className="glass rounded-2xl p-8">
             <h3 className="text-lg font-semibold mb-1">Free</h3>
             <p className="text-muted text-sm mb-6">Everything you need to get started</p>
-            <div className="text-4xl font-bold mb-6">$0 <span className="text-base font-normal text-muted">forever</span></div>
+            <div className="text-4xl font-bold mb-6">{pricing.currency === "INR" ? "₹0" : "$0"} <span className="text-base font-normal text-muted">forever</span></div>
             <ul className="space-y-3 text-sm mb-8">
               {["1 clean template", "Unlimited invoices", "Client-side PDF generation", "50+ currencies", "localStorage persistence"].map((item) => (
                 <li key={item} className="flex items-center gap-2">
@@ -126,7 +128,7 @@ export default function Home() {
             <div className="absolute top-4 right-4 bg-emerald-500/20 text-emerald-400 text-xs font-semibold px-3 py-1 rounded-full">POPULAR</div>
             <h3 className="text-lg font-semibold mb-1">Pro</h3>
             <p className="text-muted text-sm mb-6">For freelancers and small businesses</p>
-            <div className="text-4xl font-bold mb-6">$19 <span className="text-base font-normal text-muted">one-time</span></div>
+            <div className="text-4xl font-bold mb-6">{pricing.price} <span className="text-base font-normal text-muted">one-time</span></div>
             <ul className="space-y-3 text-sm mb-8">
               {["All 3+ premium templates", "Logo upload on invoices", "Custom accent colors", "Recurring invoice numbering", "CSV & JSON export", "Priority support"].map((item) => (
                 <li key={item} className="flex items-center gap-2">
