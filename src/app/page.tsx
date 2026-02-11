@@ -203,70 +203,132 @@ export default function Home() {
         <h2 className="text-3xl md:text-4xl font-bold text-center mb-3 md:mb-4">7 stunning templates</h2>
         <p className="text-muted text-center mb-12 md:mb-16 max-w-xl mx-auto">From minimal to bold. Free and Pro options that make your invoices stand out.</p>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
-          {templates.map((t) => (
-            <div
-              key={t.id}
-              className="glass rounded-2xl overflow-hidden group transition-all duration-300 hover:scale-[1.03] relative"
-              style={{ minHeight: "280px" }}
-            >
-              <div
-                className="h-48 relative flex items-center justify-center overflow-hidden"
-                style={{ background: t.preview }}
-              >
-                {/* Mini invoice mockup */}
-                <div className="w-[85%] bg-white/95 rounded-lg shadow-2xl p-3 transform group-hover:scale-105 transition-transform duration-300">
-                  <div className="flex justify-between items-start mb-2">
-                    <div className="text-[8px] font-bold" style={{ color: t.textColor === "#fff" ? "#000" : t.textColor }}>
-                      YOUR COMPANY
-                    </div>
-                    <div className="text-right">
-                      <div className="text-[10px] font-bold" style={{ color: t.textColor === "#fff" ? "#000" : t.textColor }}>
-                        INVOICE
-                      </div>
-                      <div className="text-[6px] text-gray-500">#INV-001</div>
-                    </div>
-                  </div>
-                  <div className="border-t border-gray-200 my-2" />
-                  <div className="space-y-1 text-[6px] text-gray-600">
-                    <div className="flex justify-between">
-                      <span>Service Item</span>
-                      <span>$1,000</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>Consulting</span>
-                      <span>$2,500</span>
-                    </div>
-                  </div>
-                  <div className="border-t border-gray-300 my-2" />
-                  <div className="flex justify-between text-[8px] font-bold">
-                    <span>TOTAL</span>
-                    <span style={{ color: t.textColor === "#fff" ? t.id === "contrast" ? "#EF4444" : "#047857" : t.textColor }}>
-                      $3,500
-                    </span>
-                  </div>
+          {/* Clean */}
+          <div className="glass rounded-2xl overflow-hidden group transition-all duration-300 hover:scale-[1.03]">
+            <div className="h-52 bg-gradient-to-b from-gray-50 to-gray-100 relative flex items-center justify-center overflow-hidden p-4">
+              <div className="w-full bg-white rounded-lg shadow-xl p-3 transform group-hover:scale-105 transition-transform">
+                <div className="flex justify-between mb-2">
+                  <div><div className="w-8 h-2 bg-gray-800 rounded mb-1" /><div className="w-12 h-1 bg-gray-300 rounded" /></div>
+                  <div className="text-right"><div className="text-[10px] font-bold text-gray-800">INVOICE</div><div className="text-[6px] text-gray-400">#INV-001</div></div>
                 </div>
-                {!t.free && (
-                  <div className="absolute top-3 right-3 bg-gradient-to-r from-yellow-500 to-orange-500 text-white text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1 shadow-lg">
-                    ⭐ Pro
-                  </div>
-                )}
-                {t.free && (
-                  <div className="absolute top-3 right-3 bg-emerald-500 text-white text-xs font-semibold px-3 py-1 rounded-full shadow-lg">
-                    Free
-                  </div>
-                )}
+                <div className="border-t border-gray-200 my-2" />
+                <div className="bg-gray-50 rounded p-1.5 mb-1"><div className="flex justify-between text-[6px] text-gray-500 font-semibold"><span>DESCRIPTION</span><span>AMOUNT</span></div></div>
+                <div className="space-y-1 text-[6px] text-gray-600 px-1"><div className="flex justify-between"><span>Web Design</span><span>$1,200</span></div><div className="flex justify-between"><span>Consulting</span><span>$800</span></div></div>
+                <div className="border-t border-gray-200 mt-2 pt-1"><div className="flex justify-between text-[8px] font-bold"><span>Total</span><span className="text-emerald-600">$2,000</span></div></div>
               </div>
-              <div className="p-4">
-                <h3 className="text-base font-semibold mb-1">{t.name}</h3>
-                <a
-                  href={`/templates`}
-                  className="text-sm text-emerald-400 hover:text-emerald-300 transition-colors"
-                >
-                  View details →
-                </a>
-              </div>
+              <div className="absolute top-3 right-3 bg-emerald-500 text-white text-xs font-semibold px-3 py-1 rounded-full shadow-lg">Free</div>
             </div>
-          ))}
+            <div className="p-4"><h3 className="text-base font-semibold mb-1">Clean</h3><a href="/templates" className="text-sm text-emerald-400 hover:text-emerald-300 transition-colors">View details →</a></div>
+          </div>
+
+          {/* Professional */}
+          <div className="glass rounded-2xl overflow-hidden group transition-all duration-300 hover:scale-[1.03]">
+            <div className="h-52 bg-gradient-to-br from-emerald-800 to-emerald-950 relative flex items-center justify-center overflow-hidden p-4">
+              <div className="w-full bg-white rounded-lg shadow-xl overflow-hidden transform group-hover:scale-105 transition-transform">
+                <div className="bg-emerald-600 px-3 py-2 flex justify-between items-center">
+                  <div className="text-[8px] font-bold text-white">ACME CORP</div>
+                  <div className="text-[10px] font-bold text-emerald-100">INVOICE</div>
+                </div>
+                <div className="p-3">
+                  <div className="text-[6px] text-gray-400 mb-1">BILL TO: Client Inc.</div>
+                  <div className="space-y-1 text-[6px] text-gray-600"><div className="flex justify-between"><span>Brand Strategy</span><span>$3,000</span></div><div className="flex justify-between"><span>Design System</span><span>$5,000</span></div></div>
+                  <div className="border-t border-gray-200 mt-2 pt-1"><div className="flex justify-between text-[8px] font-bold"><span>Total</span><span className="text-emerald-600">$8,000</span></div></div>
+                </div>
+              </div>
+              <div className="absolute top-3 right-3 bg-gradient-to-r from-yellow-500 to-orange-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg">⭐ Pro</div>
+            </div>
+            <div className="p-4"><h3 className="text-base font-semibold mb-1">Professional</h3><a href="/templates" className="text-sm text-emerald-400 hover:text-emerald-300 transition-colors">View details →</a></div>
+          </div>
+
+          {/* Bold */}
+          <div className="glass rounded-2xl overflow-hidden group transition-all duration-300 hover:scale-[1.03]">
+            <div className="h-52 bg-gradient-to-br from-gray-900 to-black relative flex items-center justify-center overflow-hidden p-4">
+              <div className="w-full bg-white rounded-lg shadow-xl p-3 transform group-hover:scale-105 transition-transform">
+                <div className="text-[18px] font-black text-emerald-600 leading-none mb-1">INVOICE</div>
+                <div className="text-[6px] text-gray-400 mb-2">#INV-2024-001 · Jan 15, 2025</div>
+                <div className="space-y-1 text-[6px] text-gray-600"><div className="flex justify-between"><span>App Development</span><span>$12,000</span></div><div className="flex justify-between"><span>QA Testing</span><span>$3,000</span></div></div>
+                <div className="border-t-2 border-emerald-500 mt-2 pt-1"><div className="flex justify-between text-[9px] font-black"><span>TOTAL</span><span className="text-emerald-600">$15,000</span></div></div>
+              </div>
+              <div className="absolute top-3 right-3 bg-gradient-to-r from-yellow-500 to-orange-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg">⭐ Pro</div>
+            </div>
+            <div className="p-4"><h3 className="text-base font-semibold mb-1">Bold</h3><a href="/templates" className="text-sm text-emerald-400 hover:text-emerald-300 transition-colors">View details →</a></div>
+          </div>
+
+          {/* Executive */}
+          <div className="glass rounded-2xl overflow-hidden group transition-all duration-300 hover:scale-[1.03]">
+            <div className="h-52 bg-gradient-to-br from-blue-950 to-slate-900 relative flex items-center justify-center overflow-hidden p-4">
+              <div className="w-full bg-white rounded-lg shadow-xl overflow-hidden transform group-hover:scale-105 transition-transform">
+                <div className="bg-[#1e3a5f] px-3 py-2">
+                  <div className="text-[8px] font-bold text-[#D4AF37]">STERLING & PARTNERS</div>
+                  <div className="flex justify-between items-end"><div className="text-[5px] text-blue-200">New York, NY</div><div className="text-[10px] font-bold text-white">INVOICE</div></div>
+                </div>
+                <div className="p-3 border-t-2 border-[#D4AF37]">
+                  <div className="space-y-1 text-[6px] text-gray-600"><div className="flex justify-between"><span>Legal Counsel</span><span>$15,000</span></div><div className="flex justify-between"><span>Advisory</span><span>$7,500</span></div></div>
+                  <div className="border-t border-gray-200 mt-2 pt-1"><div className="flex justify-between text-[8px] font-bold"><span>Total Due</span><span className="text-[#D4AF37]">$22,500</span></div></div>
+                </div>
+              </div>
+              <div className="absolute top-3 right-3 bg-gradient-to-r from-yellow-500 to-orange-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg">⭐ Pro</div>
+            </div>
+            <div className="p-4"><h3 className="text-base font-semibold mb-1">Executive</h3><a href="/templates" className="text-sm text-emerald-400 hover:text-emerald-300 transition-colors">View details →</a></div>
+          </div>
+
+          {/* Creative */}
+          <div className="glass rounded-2xl overflow-hidden group transition-all duration-300 hover:scale-[1.03]">
+            <div className="h-52 bg-gradient-to-br from-emerald-700 to-teal-500 relative flex items-center justify-center overflow-hidden p-4">
+              <div className="w-full bg-white rounded-lg shadow-xl overflow-hidden flex transform group-hover:scale-105 transition-transform">
+                <div className="w-8 bg-gradient-to-b from-emerald-600 to-teal-500 flex items-center justify-center">
+                  <div className="text-[5px] font-bold text-white tracking-widest rotate-[-90deg] whitespace-nowrap">INV-001</div>
+                </div>
+                <div className="flex-1 p-3">
+                  <div className="text-[9px] font-bold text-emerald-700 mb-1">INVOICE</div>
+                  <div className="text-[6px] text-gray-400 mb-2">Studio Creative Co.</div>
+                  <div className="space-y-1 text-[6px] text-gray-600"><div className="flex justify-between"><span>Logo Design</span><span>$4,000</span></div><div className="flex justify-between"><span>Brand Guide</span><span>$2,500</span></div></div>
+                  <div className="border-t border-emerald-200 mt-2 pt-1"><div className="flex justify-between text-[8px] font-bold"><span>Total</span><span className="text-emerald-600">$6,500</span></div></div>
+                </div>
+              </div>
+              <div className="absolute top-3 right-3 bg-gradient-to-r from-yellow-500 to-orange-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg">⭐ Pro</div>
+            </div>
+            <div className="p-4"><h3 className="text-base font-semibold mb-1">Creative</h3><a href="/templates" className="text-sm text-emerald-400 hover:text-emerald-300 transition-colors">View details →</a></div>
+          </div>
+
+          {/* Stripe */}
+          <div className="glass rounded-2xl overflow-hidden group transition-all duration-300 hover:scale-[1.03]">
+            <div className="h-52 bg-gradient-to-br from-indigo-600 to-indigo-900 relative flex items-center justify-center overflow-hidden p-4">
+              <div className="w-full bg-white rounded-lg shadow-xl p-3 transform group-hover:scale-105 transition-transform">
+                <div className="flex justify-between mb-2">
+                  <div className="text-[8px] font-bold text-[#635BFF]">TechFlow Inc.</div>
+                  <div className="text-[10px] font-bold text-gray-800">Invoice</div>
+                </div>
+                <div className="rounded overflow-hidden mb-1">
+                  <div className="bg-[#635BFF]/10 px-2 py-1 flex justify-between text-[6px] font-semibold text-[#635BFF]"><span>Item</span><span>Amount</span></div>
+                  <div className="bg-white px-2 py-1 flex justify-between text-[6px] text-gray-600"><span>SaaS License</span><span>$2,400</span></div>
+                  <div className="bg-gray-50 px-2 py-1 flex justify-between text-[6px] text-gray-600"><span>Support Plan</span><span>$600</span></div>
+                  <div className="bg-white px-2 py-1 flex justify-between text-[6px] text-gray-600"><span>Setup Fee</span><span>$500</span></div>
+                </div>
+                <div className="flex justify-between text-[8px] font-bold pt-1 border-t border-gray-200"><span>Total</span><span className="text-[#635BFF]">$3,500</span></div>
+              </div>
+              <div className="absolute top-3 right-3 bg-gradient-to-r from-yellow-500 to-orange-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg">⭐ Pro</div>
+            </div>
+            <div className="p-4"><h3 className="text-base font-semibold mb-1">Stripe</h3><a href="/templates" className="text-sm text-emerald-400 hover:text-emerald-300 transition-colors">View details →</a></div>
+          </div>
+
+          {/* Contrast */}
+          <div className="glass rounded-2xl overflow-hidden group transition-all duration-300 hover:scale-[1.03]">
+            <div className="h-52 bg-gradient-to-br from-gray-900 to-red-950 relative flex items-center justify-center overflow-hidden p-4">
+              <div className="w-full bg-white rounded-lg shadow-xl overflow-hidden transform group-hover:scale-105 transition-transform">
+                <div className="bg-black px-3 py-2 flex justify-between items-center">
+                  <div className="text-[8px] font-bold text-white">DARKMODE STUDIO</div>
+                  <div className="text-[10px] font-bold text-red-400">INVOICE</div>
+                </div>
+                <div className="p-3">
+                  <div className="space-y-1 text-[6px] text-gray-600"><div className="flex justify-between"><span>Photography</span><span>$5,000</span></div><div className="flex justify-between"><span>Editing</span><span>$2,000</span></div></div>
+                  <div className="border-t-2 border-red-500 mt-2 pt-1"><div className="flex justify-between text-[9px] font-bold"><span>TOTAL</span><span className="text-red-500">$7,000</span></div></div>
+                </div>
+              </div>
+              <div className="absolute top-3 right-3 bg-gradient-to-r from-yellow-500 to-orange-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg">⭐ Pro</div>
+            </div>
+            <div className="p-4"><h3 className="text-base font-semibold mb-1">Contrast</h3><a href="/templates" className="text-sm text-emerald-400 hover:text-emerald-300 transition-colors">View details →</a></div>
+          </div>
         </div>
         <div className="text-center mt-8 md:mt-12">
           <a href="/templates" className="btn-primary">
