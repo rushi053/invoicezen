@@ -35,7 +35,7 @@ export interface InvoiceData {
   notes: string;
 
   // Template
-  template: "clean" | "professional" | "bold";
+  template: "clean" | "professional" | "bold" | "executive" | "creative" | "stripe" | "contrast";
 }
 
 export const defaultInvoice: InvoiceData = {

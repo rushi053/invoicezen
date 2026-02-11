@@ -25,6 +25,34 @@ const templates = [
     free: false,
     preview: "bg-gray-900",
   },
+  {
+    id: "executive",
+    name: "Executive",
+    desc: "Dark navy with gold accents. Luxury corporate design that commands attention.",
+    free: false,
+    preview: "bg-gradient-to-br from-blue-950 to-blue-900",
+  },
+  {
+    id: "creative",
+    name: "Creative",
+    desc: "Asymmetric emerald sidebar layout. Modern and memorable for agencies.",
+    free: false,
+    preview: "bg-gradient-to-br from-emerald-700 to-teal-600",
+  },
+  {
+    id: "stripe",
+    name: "Stripe",
+    desc: "Clean rows with subtle blue accents. Inspired by tech's best design.",
+    free: false,
+    preview: "bg-indigo-600",
+  },
+  {
+    id: "contrast",
+    name: "Contrast",
+    desc: "Bold black header with red totals. High contrast that gets noticed.",
+    free: false,
+    preview: "bg-black",
+  },
 ];
 
 export default function TemplatesPage() {
@@ -52,7 +80,7 @@ export default function TemplatesPage() {
         Choose a template that matches your brand. All templates generate clean, professional PDFs.
       </p>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {templates.map((t) => (
           <div key={t.id} className="glass rounded-2xl overflow-hidden group transition-all duration-200">
             {/* Preview */}
