@@ -9,6 +9,7 @@ declare global {
 }
 
 interface PaymentOptions {
+  email?: string;
   currency?: string;
   onSuccess: (licenseKey?: string) => void;
   onFailure: (error: string) => void;
@@ -29,7 +30,7 @@ export function useRazorpay() {
     document.body.appendChild(script);
   }, []);
 
-  const openPayment = useCallback(async ({ currency = "USD", onSuccess, onFailure }: PaymentOptions) => {
+  const openPayment = useCallback(async ({ email, currency = "USD", onSuccess, onFailure }: PaymentOptions) => {
     try {
       const res = await fetch("/api/payment/create-order", {
         method: "POST",
@@ -51,18 +52,27 @@ export function useRazorpay() {
         name: "InvoiceZen",
         description: "Pro — Lifetime Access",
         order_id: data.orderId,
+        prefill: email ? { email } : undefined,
         handler: async (response: { razorpay_order_id: string; razorpay_payment_id: string; razorpay_signature: string }) => {
           try {
             const verifyRes = await fetch("/api/payment/verify", {
               method: "POST",
               headers: { "Content-Type": "application/json" },
-              body: JSON.stringify(response),
+              body: JSON.stringify({
+                ...response,
+                email,
+                amount: data.amount,
+                currency: data.currency,
+              }),
             });
             const verifyData = await verifyRes.json();
             if (verifyData.verified) {
               localStorage.setItem("invoicezen_pro", "true");
               if (verifyData.licenseKey) {
                 localStorage.setItem("invoicezen_license", verifyData.licenseKey);
+              }
+              if (email) {
+                localStorage.setItem("invoicezen_email", email);
               }
               onSuccess(verifyData.licenseKey);
             } else {
@@ -89,4 +99,30 @@ export function useRazorpay() {
 export function isProUnlocked(): boolean {
   if (typeof window === "undefined") return false;
   return localStorage.getItem("invoicezen_pro") === "true";
+}
+
+export async function restorePurchase(emailOrLicense: string): Promise<{ success: boolean; error?: string; licenseKey?: string }> {
+  try {
+    const isEmail = emailOrLicense.includes("@");
+    const res = await fetch("/api/license/verify", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(isEmail ? { email: emailOrLicense } : { licenseKey: emailOrLicense }),
+    });
+
+    const data = await res.json();
+
+    if (data.found) {
+      localStorage.setItem("invoicezen_pro", "true");
+      localStorage.setItem("invoicezen_license", data.licenseKey);
+      if (data.email) {
+        localStorage.setItem("invoicezen_email", data.email);
+      }
+      return { success: true, licenseKey: data.licenseKey };
+    } else {
+      return { success: false, error: data.error || "No purchase found" };
+    }
+  } catch (error) {
+    return { success: false, error: error instanceof Error ? error.message : "Restore failed" };
+  }
 }

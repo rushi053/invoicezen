@@ -1,16 +1,26 @@
 "use client";
 
 import { useState } from "react";
-import { useRazorpay, isProUnlocked } from "@/hooks/useRazorpay";
+import { useRazorpay, isProUnlocked, restorePurchase } from "@/hooks/useRazorpay";
 
 export default function Home() {
   const { openPayment } = useRazorpay();
   const [proStatus, setProStatus] = useState<"idle" | "success" | "error">("idle");
   const [licenseKey, setLicenseKey] = useState<string | null>(null);
+  const [email, setEmail] = useState("");
+  const [showRestore, setShowRestore] = useState(false);
+  const [restoreInput, setRestoreInput] = useState("");
+  const [restoreStatus, setRestoreStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+  const [restoreError, setRestoreError] = useState("");
 
   const handleUpgrade = () => {
+    if (!email) {
+      alert("Please enter your email address");
+      return;
+    }
     setProStatus("idle");
     openPayment({
+      email,
       currency: "USD",
       onSuccess: (key) => {
         setProStatus("success");
@@ -20,6 +30,24 @@ export default function Home() {
         if (err !== "Payment cancelled") setProStatus("error");
       },
     });
+  };
+
+  const handleRestore = async () => {
+    if (!restoreInput.trim()) {
+      setRestoreError("Please enter an email or license key");
+      return;
+    }
+    setRestoreStatus("loading");
+    setRestoreError("");
+    const result = await restorePurchase(restoreInput.trim());
+    if (result.success) {
+      setRestoreStatus("success");
+      setLicenseKey(result.licenseKey || null);
+      setTimeout(() => window.location.reload(), 1500);
+    } else {
+      setRestoreStatus("error");
+      setRestoreError(result.error || "Restore failed");
+    }
   };
   const features = [
     { icon: "⚡", title: "Instant PDF", desc: "Generate professional PDFs in seconds, right in your browser." },
@@ -112,13 +140,60 @@ export default function Home() {
                 {licenseKey && <div className="text-xs text-muted font-mono">{licenseKey}</div>}
               </div>
             ) : (
-              <button onClick={handleUpgrade} className="btn-primary w-full justify-center">
-                Upgrade to Pro →
-              </button>
+              <>
+                <input
+                  type="email"
+                  placeholder="Your email address"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="w-full bg-background border border-glass-border rounded-lg px-4 py-2.5 text-sm mb-3 focus:outline-none focus:border-emerald-500/50 transition-colors"
+                />
+                <button onClick={handleUpgrade} className="btn-primary w-full justify-center">
+                  Upgrade to Pro →
+                </button>
+              </>
             )}
             {proStatus === "error" && <p className="text-red-400 text-xs text-center mt-2">Payment failed. Try again.</p>}
           </div>
         </div>
+        <div className="text-center mt-8">
+          <button onClick={() => setShowRestore(!showRestore)} className="text-sm text-muted hover:text-emerald-400 transition-colors">
+            Already purchased? Restore your license →
+          </button>
+        </div>
+        {showRestore && (
+          <div className="max-w-md mx-auto mt-6 glass rounded-2xl p-6">
+            <h3 className="text-lg font-semibold mb-2">Restore Purchase</h3>
+            <p className="text-sm text-muted mb-4">Enter your email or license key to restore Pro access</p>
+            {restoreStatus === "success" ? (
+              <div className="text-center py-4">
+                <div className="text-emerald-400 font-semibold mb-1">✓ Pro Restored!</div>
+                {licenseKey && <div className="text-xs text-muted font-mono mb-2">{licenseKey}</div>}
+                <p className="text-xs text-muted">Refreshing...</p>
+              </div>
+            ) : (
+              <>
+                <input
+                  type="text"
+                  placeholder="email@example.com or IZ-PRO-XXXXXXXX"
+                  value={restoreInput}
+                  onChange={(e) => setRestoreInput(e.target.value)}
+                  className="w-full bg-background border border-glass-border rounded-lg px-4 py-2.5 text-sm mb-3 focus:outline-none focus:border-emerald-500/50 transition-colors"
+                />
+                <button
+                  onClick={handleRestore}
+                  disabled={restoreStatus === "loading"}
+                  className="btn-primary w-full justify-center disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {restoreStatus === "loading" ? "Restoring..." : "Restore Purchase"}
+                </button>
+                {restoreStatus === "error" && (
+                  <p className="text-red-400 text-xs text-center mt-2">{restoreError}</p>
+                )}
+              </>
+            )}
+          </div>
+        )}
       </section>
 
       {/* Footer */}
