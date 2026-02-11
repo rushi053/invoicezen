@@ -38,7 +38,7 @@ export async function POST(req: NextRequest) {
     if (!res.ok) {
       const err = await res.text();
       console.error("Razorpay API error:", res.status, err);
-      return NextResponse.json({ error: "Razorpay API failed" }, { status: 500 });
+      return NextResponse.json({ error: "Razorpay API failed", status: res.status, details: err, keyPrefix: keyId?.substring(0, 10) }, { status: 500 });
     }
 
     const order = await res.json();
