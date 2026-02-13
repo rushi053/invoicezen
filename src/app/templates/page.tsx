@@ -109,71 +109,147 @@ export default function TemplatesPage() {
               className="h-64 relative flex items-center justify-center p-4 overflow-hidden"
               style={{ background: t.preview }}
             >
-              {/* Detailed Invoice Mockup */}
-              <div className="w-full max-w-[220px] bg-white rounded-lg shadow-2xl p-4 transform group-hover:scale-105 transition-transform duration-300">
-                {/* Header */}
-                <div className="flex justify-between items-start mb-3">
-                  <div>
-                    <div className="w-8 h-8 rounded bg-gray-200 mb-1" />
-                    <div className="text-[9px] font-bold text-gray-900">YOUR COMPANY</div>
-                    <div className="text-[6px] text-gray-500">123 Business St</div>
-                    <div className="text-[6px] text-gray-500">hello@company.com</div>
-                  </div>
-                  <div className="text-right">
-                    <div className="text-[12px] font-bold text-gray-900">INVOICE</div>
-                    <div className="text-[7px] text-gray-500">#INV-001</div>
-                    <div className="text-[6px] text-gray-400 mt-1">Date: Jan 15, 2024</div>
-                    <div className="text-[6px] text-gray-400">Due: Feb 15, 2024</div>
-                  </div>
-                </div>
-
-                {/* Bill To */}
-                <div className="border-t border-gray-200 pt-2 mb-2">
-                  <div className="text-[6px] text-gray-400 uppercase mb-1">Bill To</div>
-                  <div className="text-[8px] font-semibold text-gray-900">Client Name</div>
-                  <div className="text-[6px] text-gray-500">456 Client Ave</div>
-                </div>
-
-                {/* Line Items */}
-                <div className="border-t border-gray-200 pt-2 mb-2">
-                  <div className="grid grid-cols-12 gap-1 text-[6px] text-gray-400 uppercase mb-1">
-                    <div className="col-span-6">Item</div>
-                    <div className="col-span-2 text-right">Qty</div>
-                    <div className="col-span-2 text-right">Rate</div>
-                    <div className="col-span-2 text-right">Amount</div>
-                  </div>
-                  <div className="space-y-1 text-[7px]">
-                    <div className="grid grid-cols-12 gap-1 text-gray-700">
-                      <div className="col-span-6">Design Services</div>
-                      <div className="col-span-2 text-right">1</div>
-                      <div className="col-span-2 text-right">$1,000</div>
-                      <div className="col-span-2 text-right">$1,000</div>
+              {/* Template-specific Invoice Mockup */}
+              {t.id === "clean" && (
+                <div className="w-full max-w-[220px] bg-white rounded-lg shadow-2xl p-4 transform group-hover:scale-105 transition-transform duration-300">
+                  <div className="flex justify-between items-start mb-3">
+                    <div>
+                      <div className="w-8 h-8 rounded bg-gray-100 mb-1" />
+                      <div className="text-[9px] font-bold text-gray-900">INVOICE</div>
+                      <div className="text-[6px] text-gray-500">#INV-001</div>
                     </div>
-                    <div className="grid grid-cols-12 gap-1 text-gray-700">
-                      <div className="col-span-6">Development</div>
-                      <div className="col-span-2 text-right">1</div>
-                      <div className="col-span-2 text-right">$2,500</div>
-                      <div className="col-span-2 text-right">$2,500</div>
+                    <div className="text-right">
+                      <div className="text-[8px] font-semibold text-gray-700">Acme Studio</div>
+                      <div className="text-[6px] text-gray-400">Jan 15, 2024</div>
+                    </div>
+                  </div>
+                  <div className="bg-gray-50 rounded p-2 mb-2">
+                    <div className="grid grid-cols-12 gap-1 text-[6px] text-gray-400 uppercase mb-1">
+                      <div className="col-span-6">Item</div><div className="col-span-3 text-right">Qty</div><div className="col-span-3 text-right">Amount</div>
+                    </div>
+                    <div className="grid grid-cols-12 gap-1 text-[7px] text-gray-700"><div className="col-span-6">Design</div><div className="col-span-3 text-right">1</div><div className="col-span-3 text-right">$1,000</div></div>
+                    <div className="grid grid-cols-12 gap-1 text-[7px] text-gray-700"><div className="col-span-6">Development</div><div className="col-span-3 text-right">1</div><div className="col-span-3 text-right">$2,500</div></div>
+                  </div>
+                  <div className="flex justify-between text-[9px] font-bold pt-1 border-t border-gray-200">
+                    <span>TOTAL</span><span className="text-emerald-600">$3,850</span>
+                  </div>
+                </div>
+              )}
+              {t.id === "professional" && (
+                <div className="w-full max-w-[220px] rounded-lg shadow-2xl overflow-hidden transform group-hover:scale-105 transition-transform duration-300">
+                  <div className="bg-emerald-600 p-3">
+                    <div className="flex justify-between items-center">
+                      <div className="text-[10px] font-bold text-white">INVOICE</div>
+                      <div className="text-[7px] text-emerald-100">#INV-001</div>
+                    </div>
+                    <div className="text-[6px] text-emerald-200 mt-1">Acme Studio → Client Corp</div>
+                  </div>
+                  <div className="bg-white p-3">
+                    <div className="space-y-1 text-[7px] mb-2">
+                      <div className="flex justify-between text-gray-600"><span>Design Services</span><span>$1,000</span></div>
+                      <div className="flex justify-between text-gray-600"><span>Development</span><span>$2,500</span></div>
+                    </div>
+                    <div className="flex justify-between text-[9px] font-bold pt-1 border-t border-gray-200">
+                      <span>TOTAL</span><span className="text-emerald-600">$3,850</span>
                     </div>
                   </div>
                 </div>
-
-                {/* Totals */}
-                <div className="border-t border-gray-300 pt-2 space-y-1">
-                  <div className="flex justify-between text-[7px] text-gray-600">
-                    <span>Subtotal</span>
-                    <span>$3,500</span>
+              )}
+              {t.id === "bold" && (
+                <div className="w-full max-w-[220px] bg-white rounded-lg shadow-2xl p-4 transform group-hover:scale-105 transition-transform duration-300">
+                  <div className="text-[28px] font-black text-emerald-600 leading-none mb-1">INV</div>
+                  <div className="text-[7px] text-gray-400 mb-3">#INV-001 · Jan 15, 2024</div>
+                  <div className="flex gap-2 mb-3">
+                    <div className="flex-1 bg-gray-50 rounded p-2">
+                      <div className="text-[6px] text-gray-400 uppercase">From</div>
+                      <div className="text-[7px] font-semibold">Acme Studio</div>
+                    </div>
+                    <div className="flex-1 bg-gray-50 rounded p-2">
+                      <div className="text-[6px] text-gray-400 uppercase">To</div>
+                      <div className="text-[7px] font-semibold">Client Corp</div>
+                    </div>
                   </div>
-                  <div className="flex justify-between text-[7px] text-gray-600">
-                    <span>Tax (10%)</span>
-                    <span>$350</span>
-                  </div>
-                  <div className="flex justify-between text-[9px] font-bold border-t border-gray-300 pt-1">
-                    <span>TOTAL</span>
-                    <span style={{ color: t.accentColor }}>$3,850</span>
+                  <div className="flex justify-between text-[9px] font-bold pt-1 border-t-2 border-emerald-600">
+                    <span>TOTAL</span><span className="text-emerald-600">$3,850</span>
                   </div>
                 </div>
-              </div>
+              )}
+              {t.id === "executive" && (
+                <div className="w-full max-w-[220px] rounded-lg shadow-2xl overflow-hidden transform group-hover:scale-105 transition-transform duration-300">
+                  <div className="bg-[#1e3a5f] p-3 border-b-2 border-[#D4AF37]">
+                    <div className="flex justify-between items-center">
+                      <div className="text-[10px] font-bold text-white">INVOICE</div>
+                      <div className="text-[7px] text-[#D4AF37]">#INV-001</div>
+                    </div>
+                    <div className="flex justify-between mt-2">
+                      <div><div className="text-[6px] text-[#D4AF37] uppercase">From</div><div className="text-[7px] text-white">Acme Studio</div></div>
+                      <div className="text-right"><div className="text-[6px] text-[#D4AF37] uppercase">Date</div><div className="text-[7px] text-white">Jan 15, 2024</div></div>
+                    </div>
+                  </div>
+                  <div className="bg-white p-3">
+                    <div className="space-y-1 text-[7px] mb-2">
+                      <div className="flex justify-between text-gray-600"><span>Design Services</span><span>$1,000</span></div>
+                      <div className="flex justify-between text-gray-600"><span>Development</span><span>$2,500</span></div>
+                    </div>
+                    <div className="flex justify-between text-[9px] font-bold pt-1 border-t border-gray-200">
+                      <span>TOTAL</span><span className="text-[#D4AF37]">$3,850</span>
+                    </div>
+                  </div>
+                </div>
+              )}
+              {t.id === "creative" && (
+                <div className="w-full max-w-[220px] bg-white rounded-lg shadow-2xl overflow-hidden flex transform group-hover:scale-105 transition-transform duration-300">
+                  <div className="w-[30px] bg-emerald-700 flex flex-col items-center pt-3">
+                    <div className="text-[6px] text-white font-bold [writing-mode:vertical-lr] rotate-180">INVOICE</div>
+                  </div>
+                  <div className="flex-1 p-3">
+                    <div className="flex justify-between items-start mb-2">
+                      <div className="text-[8px] font-bold text-gray-900">Acme Studio</div>
+                      <div className="text-[6px] text-gray-400">#INV-001</div>
+                    </div>
+                    <div className="space-y-1 text-[7px] mb-2">
+                      <div className="flex justify-between text-gray-600"><span>Design</span><span>$1,000</span></div>
+                      <div className="flex justify-between text-gray-600"><span>Development</span><span>$2,500</span></div>
+                    </div>
+                    <div className="flex justify-between text-[9px] font-bold pt-1 border-t border-gray-200">
+                      <span>TOTAL</span><span className="text-teal-500">$3,850</span>
+                    </div>
+                  </div>
+                </div>
+              )}
+              {t.id === "stripe" && (
+                <div className="w-full max-w-[220px] bg-white rounded-lg shadow-2xl p-4 transform group-hover:scale-105 transition-transform duration-300">
+                  <div className="flex justify-between items-start mb-3">
+                    <div className="text-[10px] font-bold text-gray-900">Invoice</div>
+                    <div className="text-[7px] text-[#635BFF] font-semibold">#INV-001</div>
+                  </div>
+                  <div className="space-y-0 text-[7px] mb-2">
+                    <div className="flex justify-between py-1.5 border-b border-gray-100 text-gray-600"><span>Design Services</span><span>$1,000</span></div>
+                    <div className="flex justify-between py-1.5 border-b border-gray-100 text-gray-600"><span>Development</span><span>$2,500</span></div>
+                    <div className="flex justify-between py-1.5 border-b border-gray-100 text-gray-600"><span>Consulting</span><span>$500</span></div>
+                  </div>
+                  <div className="flex justify-between text-[9px] font-bold pt-1">
+                    <span>TOTAL</span><span className="text-[#635BFF]">$4,350</span>
+                  </div>
+                </div>
+              )}
+              {t.id === "contrast" && (
+                <div className="w-full max-w-[220px] rounded-lg shadow-2xl overflow-hidden transform group-hover:scale-105 transition-transform duration-300">
+                  <div className="bg-black p-3">
+                    <div className="text-[11px] font-black text-white">INVOICE</div>
+                    <div className="text-[6px] text-gray-400">#INV-001 · Acme Studio</div>
+                  </div>
+                  <div className="bg-white p-3">
+                    <div className="space-y-1 text-[7px] mb-2">
+                      <div className="flex justify-between text-gray-600"><span>Design Services</span><span>$1,000</span></div>
+                      <div className="flex justify-between text-gray-600"><span>Development</span><span>$2,500</span></div>
+                    </div>
+                    <div className="flex justify-between text-[10px] font-black pt-1 border-t-2 border-black">
+                      <span>TOTAL</span><span className="text-red-500">$3,850</span>
+                    </div>
+                  </div>
+                </div>
+              )}
 
               {/* Badge */}
               {!t.free ? (
