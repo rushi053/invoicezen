@@ -11,6 +11,8 @@ export default function CreatePage() {
   const [invoice, setInvoice] = useState<InvoiceData>(defaultInvoice);
   const [mounted, setMounted] = useState(false);
   const [isPro, setIsPro] = useState(false);
+  const [showUpgradeFor, setShowUpgradeFor] = useState<string | null>(null);
+  const [showColorUpgrade, setShowColorUpgrade] = useState(false);
 
   useEffect(() => {
     setMounted(true);
@@ -96,7 +98,10 @@ export default function CreatePage() {
     <div className="min-h-screen flex flex-col lg:flex-row">
       {/* Form */}
       <div className="lg:w-1/2 p-6 lg:p-8 overflow-y-auto lg:h-[calc(100vh-4rem)]">
-        <h1 className="text-2xl font-bold mb-6">Create Invoice</h1>
+        <h1 className="text-2xl font-bold mb-6">
+          Create Invoice
+          {isPro && <span className="ml-2 text-sm bg-emerald-500/20 text-emerald-400 px-2 py-1 rounded-full align-middle">✨ Pro</span>}
+        </h1>
 
         {/* Your Details */}
         <Section title="Your Details">
@@ -145,48 +150,113 @@ export default function CreatePage() {
             <Field label="Invoice Date" value={invoice.invoiceDate} onChange={(v) => update("invoiceDate", v)} type="date" />
             <Field label="Due Date" value={invoice.dueDate} onChange={(v) => update("dueDate", v)} type="date" />
           </div>
-          
-          {/* Pro Feature: Custom Accent Color */}
-          {isPro && (
-            <div className="mt-4 glass rounded-xl p-4">
-              <div className="flex items-center justify-between mb-3">
-                <label className="text-sm text-muted">Custom Accent Color (Pro)</label>
-                <span className="text-xs bg-emerald-500/20 text-emerald-400 px-2 py-1 rounded">✨ Pro</span>
+
+          {/* Template Selector */}
+          <div className="mt-4">
+            <label className="block text-sm text-muted mb-2">Template</label>
+            <div className="flex flex-wrap gap-2">
+              {(["clean", "professional", "bold", "executive", "creative", "stripe", "contrast"] as const).map((tpl) => {
+                const isFreeTpl = tpl === "clean";
+                const isLocked = !isFreeTpl && !isPro;
+                const isActive = invoice.template === tpl;
+                const tplColors: Record<string, string> = {
+                  clean: "#059669", professional: "#059669", bold: "#059669",
+                  executive: "#D4AF37", creative: "#14b8a6", stripe: "#635BFF", contrast: "#EF4444",
+                };
+                return (
+                  <button
+                    key={tpl}
+                    onClick={() => {
+                      if (isLocked) {
+                        setShowUpgradeFor(tpl);
+                        return;
+                      }
+                      update("template", tpl);
+                    }}
+                    className={`relative px-3 py-1.5 rounded-lg text-xs font-medium transition-all border ${
+                      isActive
+                        ? "border-emerald-400 bg-emerald-500/20 text-emerald-400"
+                        : "border-glass-border glass text-muted hover:text-foreground hover:border-emerald-500/40"
+                    }`}
+                  >
+                    <span className="flex items-center gap-1.5">
+                      {isLocked && <span className="opacity-60">🔒</span>}
+                      <span className="capitalize">{tpl}</span>
+                      <span className="w-2 h-2 rounded-full inline-block" style={{ backgroundColor: tplColors[tpl] }} />
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+            {showUpgradeFor && !isPro && (
+              <div className="mt-2 text-xs text-muted flex items-center gap-2 animate-fadeIn">
+                <span>✨ <span className="capitalize">{showUpgradeFor}</span> is a Pro template.</span>
+                <a href="/#pricing" className="text-emerald-400 hover:text-emerald-300 transition-colors font-medium">Upgrade to Pro →</a>
+                <button onClick={() => setShowUpgradeFor(null)} className="text-muted hover:text-foreground ml-1">✕</button>
               </div>
-              <div className="flex items-center gap-3">
+            )}
+          </div>
+          
+          {/* Accent Color — visible to all, locked for free */}
+          <div className="mt-4 glass rounded-xl p-4 relative">
+            <div className="flex items-center justify-between mb-3">
+              <label className="text-sm text-muted">Accent Color</label>
+              {isPro && <span className="text-xs bg-emerald-500/20 text-emerald-400 px-2 py-1 rounded">✨ Pro</span>}
+            </div>
+            <div className={`flex items-center gap-3 ${!isPro ? "opacity-50 pointer-events-none select-none" : ""}`}>
+              <input
+                type="color"
+                value={invoice.accentColor || "#059669"}
+                onChange={(e) => update("accentColor", e.target.value)}
+                className="w-16 h-10 rounded cursor-pointer"
+              />
+              <div className="flex-1">
                 <input
-                  type="color"
+                  type="text"
                   value={invoice.accentColor || "#059669"}
                   onChange={(e) => update("accentColor", e.target.value)}
-                  className="w-16 h-10 rounded cursor-pointer"
+                  placeholder="#059669"
+                  className="w-full"
                 />
-                <div className="flex-1">
-                  <input
-                    type="text"
-                    value={invoice.accentColor || "#059669"}
-                    onChange={(e) => update("accentColor", e.target.value)}
-                    placeholder="#059669"
-                    className="w-full"
-                  />
-                </div>
-                <button
-                  onClick={() => update("accentColor", "#059669")}
-                  className="text-xs text-muted hover:text-foreground transition-colors"
-                >
-                  Reset
-                </button>
               </div>
-              <p className="text-xs text-muted mt-2">Customize the accent color used in your invoice headers, totals, and highlights.</p>
+              <button
+                onClick={() => update("accentColor", "#059669")}
+                className="text-xs text-muted hover:text-foreground transition-colors"
+              >
+                Reset
+              </button>
             </div>
-          )}
+            {!isPro && (
+              <div
+                className="absolute inset-0 rounded-xl cursor-pointer flex items-center justify-center"
+                onClick={() => setShowColorUpgrade(true)}
+              >
+                {showColorUpgrade && (
+                  <div className="glass rounded-lg px-3 py-2 text-xs text-center">
+                    <a href="/#pricing" className="text-emerald-400 hover:text-emerald-300 transition-colors font-medium">
+                      Upgrade to Pro to customize colors →
+                    </a>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
           
+          {/* Pro Features Callout */}
           {!isPro && (
-            <div className="mt-4 glass rounded-xl p-4 border border-emerald-500/20">
-              <p className="text-sm text-muted mb-2">
-                <span className="text-emerald-400 font-semibold">Pro features:</span> Custom accent colors, watermark removal, due date reminders, and more.
-              </p>
-              <a href="/#pricing" className="text-sm text-emerald-400 hover:text-emerald-300 transition-colors">
-                Upgrade to Pro →
+            <div className="mt-4 glass rounded-xl p-5 border border-emerald-500/30 bg-gradient-to-br from-emerald-500/5 to-transparent">
+              <h3 className="text-sm font-semibold text-emerald-400 mb-3">Unlock the Full Experience</h3>
+              <div className="grid grid-cols-2 gap-2 text-xs text-muted mb-4">
+                <span>✓ 6 premium templates</span>
+                <span>✓ Custom accent colors</span>
+                <span>✓ Watermark removal</span>
+                <span>✓ Due date reminders</span>
+              </div>
+              <a
+                href="/#pricing"
+                className="inline-block px-4 py-2 rounded-lg bg-emerald-500 text-white text-sm font-medium hover:bg-emerald-400 transition-colors"
+              >
+                Unlock Pro →
               </a>
             </div>
           )}

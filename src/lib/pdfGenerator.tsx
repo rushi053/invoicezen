@@ -67,11 +67,27 @@ function DueReminderPdf({ invoice, isPro, accentColor }: { invoice: InvoiceData;
 function WatermarkPdf({ isPro }: { isPro: boolean }) {
   if (isPro) return null;
   return (
-    <View style={{ marginTop: 24, paddingTop: 12, borderTopWidth: 1, borderTopColor: "#eee" }}>
-      <Text style={{ fontSize: 7, color: "#bbb", textAlign: "center" }}>
-        Created with <Link src="https://invoice.rushiraj.me" style={{ color: "#059669", textDecoration: "none" }}>InvoiceZen</Link> — Privacy-first invoice generator
-      </Text>
-    </View>
+    <>
+      {/* Diagonal watermark across the page */}
+      <View style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, justifyContent: "center", alignItems: "center" }} fixed>
+        <Text style={{
+          fontSize: 64,
+          color: "#d1d5db",
+          opacity: 0.3,
+          fontFamily: "Helvetica-Bold",
+          transform: "rotate(-45deg)",
+          letterSpacing: 12,
+        }}>
+          INVOICEZEN
+        </Text>
+      </View>
+      {/* Footer link */}
+      <View style={{ marginTop: 24, paddingTop: 12, borderTopWidth: 1, borderTopColor: "#eee" }}>
+        <Text style={{ fontSize: 7, color: "#bbb", textAlign: "center" }}>
+          Created with <Link src="https://invoice.rushiraj.me" style={{ color: "#059669", textDecoration: "none" }}>InvoiceZen</Link> — Privacy-first invoice generator
+        </Text>
+      </View>
+    </>
   );
 }
 
