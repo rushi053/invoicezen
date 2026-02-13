@@ -33,6 +33,19 @@ export function useRazorpay() {
 
   const openPayment = useCallback(async ({ email, currency = "USD", amount, onSuccess, onFailure }: PaymentOptions) => {
     try {
+      // Wait for Razorpay script to load (up to 5s)
+      if (!window.Razorpay) {
+        let waited = 0;
+        while (!window.Razorpay && waited < 5000) {
+          await new Promise(r => setTimeout(r, 200));
+          waited += 200;
+        }
+        if (!window.Razorpay) {
+          onFailure("Payment system not loaded. Please refresh and try again.");
+          return;
+        }
+      }
+
       const res = await fetch("/api/payment/create-order", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -40,11 +53,6 @@ export function useRazorpay() {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Failed to create order");
-
-      if (!window.Razorpay) {
-        onFailure("Payment system not loaded. Please refresh and try again.");
-        return;
-      }
 
       const options = {
         key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,

@@ -74,20 +74,31 @@ export default function TemplatesPage() {
   const { openPayment } = useRazorpay();
   const pricing = getLocalPricing();
   const [isPro, setIsPro] = useState(false);
+  const [paymentError, setPaymentError] = useState("");
+  const [isProcessing, setIsProcessing] = useState(false);
 
   useEffect(() => {
     setIsPro(isProUnlocked());
   }, []);
 
   const handleUpgrade = () => {
+    setPaymentError("");
+    setIsProcessing(true);
     openPayment({
       currency: pricing.currency,
       amount: toSmallestUnit(pricing.price, pricing.currency),
       onSuccess: () => {
+        setIsProcessing(false);
         setIsPro(true);
         setTimeout(() => window.location.reload(), 500);
       },
-      onFailure: () => {},
+      onFailure: (err) => {
+        setIsProcessing(false);
+        if (err !== "Payment cancelled") {
+          setPaymentError("Payment failed. Please try again.");
+          setTimeout(() => setPaymentError(""), 5000);
+        }
+      },
     });
   };
 
@@ -100,6 +111,12 @@ export default function TemplatesPage() {
           with full customization support.
         </p>
       </div>
+
+      {paymentError && (
+        <div className="mb-6 p-4 bg-red-500/10 border border-red-500/20 rounded-xl text-red-400 text-sm text-center">
+          {paymentError}
+        </div>
+      )}
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
         {templates.map((t) => (
@@ -277,9 +294,10 @@ export default function TemplatesPage() {
               ) : (
                 <button
                   onClick={handleUpgrade}
-                  className="btn-secondary text-sm !py-2 !px-4 w-full text-center hover:border-emerald-500 transition-all"
+                  disabled={isProcessing}
+                  className="btn-secondary text-sm !py-2 !px-4 w-full text-center hover:border-emerald-500 transition-all disabled:opacity-50"
                 >
-                  🔒 Unlock with Pro — {pricing.display}
+                  {isProcessing ? "Processing..." : `🔒 Unlock with Pro — ${pricing.display}`}
                 </button>
               )}
             </div>

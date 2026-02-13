@@ -26,11 +26,17 @@ export default function Home() {
   const [restoreError, setRestoreError] = useState("");
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null);
 
+  const [emailError, setEmailError] = useState(false);
+
   const handleUpgrade = () => {
     if (!email) {
-      alert("Please enter your email address");
+      setEmailError(true);
+      // Focus the email input
+      const emailInput = document.querySelector<HTMLInputElement>('input[type="email"]');
+      emailInput?.focus();
       return;
     }
+    setEmailError(false);
     setProStatus("idle");
     openPayment({
       email,
@@ -494,11 +500,15 @@ export default function Home() {
               <>
                 <input
                   type="email"
-                  placeholder="Your email address"
+                  placeholder="Your email (for license delivery)"
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="w-full bg-background border border-glass-border rounded-lg px-4 py-2.5 text-sm mb-3 focus:outline-none focus:border-emerald-500/50 transition-colors"
+                  onChange={(e) => { setEmail(e.target.value); setEmailError(false); }}
+                  className={`w-full bg-background border rounded-lg px-4 py-2.5 text-sm mb-1 focus:outline-none transition-colors ${
+                    emailError ? "border-red-500 focus:border-red-500" : "border-glass-border focus:border-emerald-500/50"
+                  }`}
                 />
+                {emailError && <p className="text-red-400 text-xs mb-2">Please enter your email to receive your license key</p>}
+                {!emailError && <div className="mb-2" />}
                 <button onClick={handleUpgrade} className="btn-primary w-full justify-center">
                   Upgrade to Pro →
                 </button>
