@@ -56,9 +56,9 @@ function DueReminderPdf({ invoice, isPro, accentColor }: { invoice: InvoiceData;
   if (days <= 0) return null;
   
   return (
-    <View style={{ marginTop: 12, padding: 8, backgroundColor: `${accentColor}15`, borderRadius: 4, borderLeftWidth: 3, borderLeftColor: accentColor }}>
+    <View style={{ marginTop: 12, marginBottom: 12, padding: 8, backgroundColor: "#f0fdf4", borderRadius: 4, borderLeftWidth: 3, borderLeftColor: accentColor }}>
       <Text style={{ fontSize: 9, color: accentColor, fontFamily: "Helvetica-Bold" }}>
-        ⏰ Payment due in {days} {days === 1 ? "day" : "days"}
+        Payment due in {days} {days === 1 ? "day" : "days"}
       </Text>
     </View>
   );
@@ -67,12 +67,15 @@ function DueReminderPdf({ invoice, isPro, accentColor }: { invoice: InvoiceData;
 function WatermarkPdf({ isPro }: { isPro: boolean }) {
   if (isPro) return null;
   return (
-    <View style={{ marginTop: 24, paddingTop: 12, borderTopWidth: 1, borderTopColor: "#eee" }}>
-      <Text style={{ fontSize: 9, color: "#ccc", textAlign: "center", fontFamily: "Helvetica-Bold", letterSpacing: 4, marginBottom: 4 }}>
+    <View style={{ marginTop: 30, paddingTop: 16, borderTopWidth: 2, borderTopColor: "#e5e7eb" }}>
+      <Text style={{ fontSize: 12, color: "#9ca3af", textAlign: "center", fontFamily: "Helvetica-Bold", letterSpacing: 6, marginBottom: 6 }}>
         INVOICEZEN
       </Text>
-      <Text style={{ fontSize: 7, color: "#bbb", textAlign: "center" }}>
-        Created with <Link src="https://invoice.rushiraj.me" style={{ color: "#059669", textDecoration: "none" }}>InvoiceZen</Link> — Privacy-first invoice generator
+      <Text style={{ fontSize: 8, color: "#9ca3af", textAlign: "center" }}>
+        Generated with InvoiceZen — Free tier
+      </Text>
+      <Text style={{ fontSize: 7, color: "#059669", textAlign: "center", marginTop: 2 }}>
+        invoice.rushiraj.me
       </Text>
     </View>
   );
