@@ -27,6 +27,7 @@ export default function Home() {
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null);
 
   const [emailError, setEmailError] = useState(false);
+  const [paymentError, setPaymentError] = useState("");
 
   const handleUpgrade = () => {
     if (!email) {
@@ -38,6 +39,7 @@ export default function Home() {
     }
     setEmailError(false);
     setProStatus("idle");
+    setPaymentError("");
     openPayment({
       email,
       currency: pricing.currency,
@@ -47,7 +49,11 @@ export default function Home() {
         setLicenseKey(key || null);
       },
       onFailure: (err) => {
-        if (err !== "Payment cancelled") setProStatus("error");
+        console.error("Payment failure:", err);
+        if (err !== "Payment cancelled") {
+          setProStatus("error");
+          setPaymentError(err);
+        }
       },
     });
   };
@@ -514,7 +520,7 @@ export default function Home() {
                 </button>
               </>
             )}
-            {proStatus === "error" && <p className="text-red-400 text-xs text-center mt-2">Payment failed. Try again.</p>}
+            {proStatus === "error" && <p className="text-red-400 text-xs text-center mt-2">Payment failed{paymentError ? `: ${paymentError}` : ""}. Try again.</p>}
           </div>
         </div>
         <div className="text-center mt-8">
